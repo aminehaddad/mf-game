@@ -8,3 +8,7 @@ if settings.DJANGO_ADMIN_ENABLED:
     urlpatterns += [
         url(r'^admin/', admin.site.urls),
     ]
+
+urlpatterns += [
+    url(r'', include('mf_game.urls')),
+]

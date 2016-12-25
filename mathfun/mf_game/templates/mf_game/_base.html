@@ -1,0 +1,36 @@
+{% load staticfiles %}<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- Required meta tags always come first -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+
+	<!-- Title -->
+	<title>{% block title %}MathFun Game{% endblock %}</title>
+
+	<!-- Libraries -->
+	<link href="{% static "mf_game/libs/bootstrap4/css/bootstrap.min.css" %}" rel="stylesheet">
+
+	<!-- Custom -->
+	<link href="{% static "mf_game/css/game.css" %}" rel="stylesheet">
+
+	<!-- Head footer -->
+	{% block head_footer %}{% endblock %}
+</head>
+<body>
+	<!-- Body -->
+	{% block body %}{% endblock %}
+
+	<!-- Libraries -->
+	<script src="{% static "mf_game/libs/jquery/jquery-3.1.1.min.js" %}"></script>
+	<script src="{% static "mf_game/libs/tether/js/tether.min.js" %}"></script>
+	<script src="{% static "mf_game/libs/bootstrap4/js/bootstrap.min.js" %}"></script>
+
+	<!-- Custom -->
+	<script src="{% static "mf_game/js/game.js" %}"></script>
+
+	<!-- Body footer -->
+	{% block body_footer %}{% endblock %}
+</body>
+</html>

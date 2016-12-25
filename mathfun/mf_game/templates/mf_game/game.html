@@ -1,0 +1,14 @@
+{% extends "mf_game/_base.html" %}
+{% load staticfiles %}
+
+{% block body %}
+	<p id="main">Loading..</p>
+{% endblock %}
+
+{% block body_footer %}
+	<script>
+		$(document).ready(function() {
+			$("#main").text("Hello World!");
+		});
+	</script>
+{% endblock %}
