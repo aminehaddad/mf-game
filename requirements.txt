@@ -1,11 +1,18 @@
 # Install Django
-Django
+Django==1.10.4
 
-# Required for Django timezones. This is from the django docs: https://docs.djangoproject.com/en/1.8/topics/i18n/timezones/
-pytz
+# Required for Django timezones
+pytz==2016.10
 
 # Postgres Database Adapter (requires 'python-dev' and 'libpq-dev' packages in Ubuntu)
-psycopg2
+psycopg2==2.6.2
 
 # Database config loader
-dj-database-url
+dj-database-url==0.4.1
+
+# Used for serving static files
+dj-static==0.0.6
+
+# (Heroku) Python WSGI HTTP server.
+gunicorn==19.6.0
+gevent==1.2.0
