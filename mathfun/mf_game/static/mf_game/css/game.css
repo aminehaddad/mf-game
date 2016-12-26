@@ -1,0 +1,5 @@
+#table-math th,
+#table-math td {
+	text-align: center;
+	min-width: 60px;
+}

@@ -2,13 +2,142 @@
 {% load staticfiles %}
 
 {% block body %}
-	<p id="main">Loading..</p>
+	<div class="container-fluid" id="container-loading">
+		<p id="loading">Loading..</p>
+	</div>
+
+	<div class="container-fluid" id="container-game" style="display:none;">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<br>
+				<h2>MathFun Game</h2>
+				<p>Pick one to practice:</p>
+				<button type="button" class="btn btn-secondary action-start-additions">Play Additions</button>
+				<button type="button" class="btn btn-secondary action-start-multiplications">Play Multiplications</button>
+				<button type="button" class="btn btn-secondary action-show-answers">Show answers</button>
+				<button type="button" class="btn btn-secondary action-start-quiz" disabled>Start quiz</button>
+				<br>
+				<br>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div id="table-math-container" class="table-responsive" style="max-width:600px;">
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
 
 {% block body_footer %}
 	<script>
 		$(document).ready(function() {
-			$("#main").text("Hello World!");
+			// Game settings
+			var gameSettings = {
+				"id": "#table-math-container",
+				"rows": 12,
+				"columns": 12,
+				"type": "additions",
+			};
+
+			// Build the HTML for the game table
+			function buildTableHTML(rows, columns, showAnswers) {
+				// Table
+				var tableHTML = '';
+				tableHTML += '<table id="table-math" class="table table-bordered">';
+
+				// Table head
+				tableHTML += '<thead>';
+				tableHTML += '<tr>';
+
+				if(gameSettings.type === "additions") {
+					tableHTML += '<th>+</th>';
+				} else if(gameSettings.type === "multiplications") {
+					tableHTML += '<th>x</th>';
+				}
+
+				for(var i=1; i<rows+1; i++) {
+					tableHTML += '<th>';
+					tableHTML += i;
+					tableHTML += '</th>';
+				};
+				tableHTML += '</tr>';
+				tableHTML += '</thead>';
+
+				// Table body
+				tableHTML += '<tbody>';
+
+				for(var i=1; i<columns+1; i++) {
+					tableHTML += '<tr>';
+					tableHTML += '<th>' + i + '</th>';
+					for(var j=1; j<rows+1; j++) {
+						tableHTML += '<td>';
+						if(showAnswers) {
+							if(gameSettings.type === "additions") {
+								tableHTML += (i+j);
+							} else if(gameSettings.type === "multiplications") {
+								tableHTML += (i*j);
+							}
+						}
+						tableHTML += '</td>';
+					};
+					tableHTML += '</tr>';
+				};
+
+				tableHTML += '</tbody>';
+				tableHTML += '</table>';
+
+				return tableHTML;
+			}
+
+			// This updates to the latest game table
+			function updateTableHTML(showAnswers) {
+				var tableHtml = buildTableHTML(gameSettings.rows, gameSettings.columns, showAnswers);
+				$(gameSettings.id).html(tableHtml);
+			}
+
+			// This clears the game table
+			function clearGameTable() {
+				$(gameSettings.id).html("");
+			}
+
+			// When they click the "Additions" button, load the game
+			$(".action-start-additions").click(function() {
+				clearGameTable();
+				gameSettings.type = "additions";
+				updateTableHTML();
+			});
+
+			// When they click the "Multiplications" button, load the game
+			$(".action-start-multiplications").click(function() {
+				clearGameTable();
+				gameSettings.type = "multiplications";
+				updateTableHTML();
+			});
+
+			// When they click the "Show answers" button, load it with the answers
+			$(".action-show-answers").click(function() {
+				clearGameTable();
+				updateTableHTML(showAnswers=true);
+			});
+
+			// When they click the "Start quiz" button, start a new quiz
+			$(".action-start-quiz").click(function() {
+				alert("Quiz feature is coming soon!");
+			});
+		});
+	</script>
+
+	<script>
+		$(document).ready(function() {
+			// Hide the container that says "loading"
+			$("#container-loading").hide();
+
+			// Load the container for the game
+			$("#container-game").show();
+
+			// Start game
+			$(".action-start-additions").click();
 		});
 	</script>
 {% endblock %}
