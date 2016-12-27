@@ -3,3 +3,75 @@
 	text-align: center;
 	min-width: 60px;
 }
+
+/* Do not stretch form-inline on mobile */
+@media (max-width: 576px) {
+	.form-inline-custom .form-control {
+		display: inline-block;
+		width: auto;
+		vertical-align: middle;
+	}
+}
+
+/* The header row */
+.row.header {
+	background-color: #4682B4;
+	background-image: repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);
+	padding-left: 15px;
+	padding-top: 10px;
+}
+
+.row.header h2 {
+	color: #FFFFFF;
+	text-shadow: 3px 2px #000000;
+
+	padding-top: 10px;
+}
+
+.row.header p {
+	color: #FFFFFF;
+	text-shadow: 3px 2px #000000;
+	padding-left: 10px;
+}
+
+/* The game options row */
+.row.options {
+	background-color: #FF8C00;
+	padding-top: 20px;
+}
+
+.row.options label {
+	color: #FFFFFF;
+}
+
+.row.options .button-options {
+	margin-top: 10px;
+}
+
+/* The congrats row */
+.row.congrats {
+	padding-top: 15px;
+	padding-left: 10px;
+	background-color: green;
+}
+
+.row.congrats p {
+	color: #FFFFFF;
+}
+
+/* The answers row */
+.row.answers {
+	background-color: #FFFFFF;
+	padding-top: 15px;
+}
+
+/* Footer row */
+.row.footer {
+	background-color: #D3D3D3;
+	padding-top: 15px;
+	padding-left: 10px;
+}
+
+.row.footer p {
+	font-size: 12px;
+}

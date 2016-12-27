@@ -7,53 +7,75 @@
 	</div>
 
 	<div class="container-fluid" id="container-game" style="display:none;">
-		<div class="row">
-			<div class="col-xs-12 col-sm-12">
-				<br>
-				<h2>MathFun Game</h2>
-				<div class="form-group form-inline">
-					<label for="selectedNumber1">Select your choice:</label>
-					<select class="form-control" id="selectedNumber1">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
-						<option value="11">11</option>
-						<option value="12">12</option>
-					</select>
-					<select class="form-control" id="selectedOperator">
-						<option value="additions">+</option>
-						<option value="multiplications">x</option>
-					</select>
-					<select class="form-control" id="selectedNumber2">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
-						<option value="11">11</option>
-						<option value="12">12</option>
-					</select>
-					<button type="button" class="btn btn-secondary action-start-quiz">Start quiz</button>
-					<button type="button" class="btn btn-secondary action-show-answers">Show answers</button>
+		<div class="row header">
+			<h2>MathFun Game</h2>
+			<p>by Amine Haddad</p>
+		</div>
+		<div class="row options">
+			<div class="col-xs-12">
+				<div class="form-group form-inline form-inline-custom">
+					<div>
+						<label for="selectedNumber1">Select your choice:</label>
+					</div>
+					<div>
+						<select class="form-control" id="selectedNumber1">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+						</select>
+						<select class="form-control" id="selectedOperator">
+							<option value="additions">+</option>
+							<option value="multiplications">x</option>
+						</select>
+						<select class="form-control" id="selectedNumber2">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+						</select>
+					</div>
+					<div class="button-options">
+						<button type="button" class="btn btn-secondary action-start-quiz">Start quiz</button>
+						<button type="button" class="btn btn-secondary action-show-answers">Show answers</button>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row congrats" style="display:none;">
+			<div class="col-xs-12">
+				<p>Congratulations! You finished the game!</p>
+			</div>
+		</div>
+		<div class="row answers" style="display:none;">
 			<div class="col-xs-12">
 				<div id="table-math-container" class="table-responsive">
 				</div>
+			</div>
+		</div>
+		<div class="row footer">
+			<div class="col-xs-12">
+				<p>
+					Amine Haddad &copy; 2016-2017
+					&mdash;
+					<a href="https://github.com/aminehaddad/mf-game" target="_blank">Source Code</a>
+				</p>
 			</div>
 		</div>
 	</div>
@@ -245,7 +267,7 @@
 			if(isLastQuestion) {
 				$("#questionModal").modal("hide");
 				$("#answerInput").val("");
-				alert("Congratulations! You finished the game!");
+				$(".row.congrats").show();
 				return;
 			}
 
@@ -284,16 +306,24 @@
 			// When they click the "Show answers" button, load it with the answers
 			$(".action-show-answers").click(function() {
 				clearGameTable();
+				$(".row.answers").toggle();
 				updateTableHTML(showAnswers=true);
 			});
 
 			// When they click the "Start quiz" button, start a new quiz
 			$(".action-start-quiz").click(function() {
 				clearGameTable();
+				$(".row.answers").hide();
+				$(".row.congrats").hide();
 				loadQuizQuestions();
 				loadFirstQuestion();
 				$('#questionModal').modal();
 			});
+
+			// When first question opens up, select the answer input
+			$('#questionModal').on('shown.bs.modal', function() {
+				$('#answerInput').focus();
+			})
 
 			// When they submit an answer by pressing 'next question', process it
 			$(".action-next-question").click(function() {
