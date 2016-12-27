@@ -11,13 +11,43 @@
 			<div class="col-xs-12 col-sm-12">
 				<br>
 				<h2>MathFun Game</h2>
-				<p>Pick one to practice:</p>
-				<button type="button" class="btn btn-secondary action-start-additions">Play Additions</button>
-				<button type="button" class="btn btn-secondary action-start-multiplications">Play Multiplications</button>
-				<button type="button" class="btn btn-secondary action-show-answers">Show answers</button>
-				<button type="button" class="btn btn-secondary action-start-quiz" disabled>Start quiz</button>
-				<br>
-				<br>
+				<div class="form-group form-inline">
+					<label for="selectedNumber1">Select your choice:</label>
+					<select class="form-control" id="selectedNumber1">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+					</select>
+					<select class="form-control" id="selectedOperator">
+						<option value="additions">+</option>
+						<option value="multiplications">x</option>
+					</select>
+					<select class="form-control" id="selectedNumber2">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+					</select>
+					<button type="button" class="btn btn-secondary action-start-quiz">Start quiz</button>
+					<button type="button" class="btn btn-secondary action-show-answers">Show answers</button>
+				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -27,92 +57,228 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Question modal -->
+	<div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="questionModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="questionModalLabel">Question: loading..</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="answerInput" class="col-form-label">Answer:</label>
+						<div class="">
+							<input class="form-control" type="number" id="answerInput" value="">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary action-next-question">Next</button>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
 
 {% block body_footer %}
 	<script>
+		// Game settings
+		var gameSettings = {
+			"id": "#table-math-container",
+			"rows": 4,
+			"columns": 4,
+			"type": "additions",
+		};
+
+		var gameData = {
+			"questions": [],
+			"answers": [],
+
+			"currentQuestion": "",
+			"currentAnswer": "",
+		};
+
+		// Setup default values of gameSettings when document loads
 		$(document).ready(function() {
-			// Game settings
-			var gameSettings = {
-				"id": "#table-math-container",
-				"rows": 12,
-				"columns": 12,
-				"type": "additions",
-			};
+			// Default to gameSettings values for rows/columns/type
+			$("#selectedNumber1 option[value=" + gameSettings.rows + "]").prop("selected", true);
+			$("#selectedNumber2 option[value=" + gameSettings.columns + "]").prop("selected", true);
+			$("#selectedOperator option[value=" + gameSettings.type + "]").prop("selected", true);
+		});
 
-			// Build the HTML for the game table
-			function buildTableHTML(rows, columns, showAnswers) {
-				// Table
-				var tableHTML = '';
-				tableHTML += '<table id="table-math" class="table table-bordered">';
+		// Build the HTML for the game table
+		function buildTableHTML(rows, columns, showAnswers) {
+			// Table
+			var tableHTML = '';
+			tableHTML += '<table id="table-math" class="table table-bordered">';
 
-				// Table head
-				tableHTML += '<thead>';
+			// Table head
+			tableHTML += '<thead>';
+			tableHTML += '<tr>';
+
+			if(gameSettings.type === "additions") {
+				tableHTML += '<th>+</th>';
+			} else if(gameSettings.type === "multiplications") {
+				tableHTML += '<th>x</th>';
+			}
+
+			for(var i=1; i<rows+1; i++) {
+				tableHTML += '<th>';
+				tableHTML += i;
+				tableHTML += '</th>';
+			}
+			tableHTML += '</tr>';
+			tableHTML += '</thead>';
+
+			// Table body
+			tableHTML += '<tbody>';
+
+			for(var i=1; i<columns+1; i++) {
 				tableHTML += '<tr>';
-
-				if(gameSettings.type === "additions") {
-					tableHTML += '<th>+</th>';
-				} else if(gameSettings.type === "multiplications") {
-					tableHTML += '<th>x</th>';
-				}
-
-				for(var i=1; i<rows+1; i++) {
-					tableHTML += '<th>';
-					tableHTML += i;
-					tableHTML += '</th>';
-				};
-				tableHTML += '</tr>';
-				tableHTML += '</thead>';
-
-				// Table body
-				tableHTML += '<tbody>';
-
-				for(var i=1; i<columns+1; i++) {
-					tableHTML += '<tr>';
-					tableHTML += '<th>' + i + '</th>';
-					for(var j=1; j<rows+1; j++) {
-						tableHTML += '<td>';
-						if(showAnswers) {
-							if(gameSettings.type === "additions") {
-								tableHTML += (i+j);
-							} else if(gameSettings.type === "multiplications") {
-								tableHTML += (i*j);
-							}
+				tableHTML += '<th>' + i + '</th>';
+				for(var j=1; j<rows+1; j++) {
+					tableHTML += '<td>';
+					if(showAnswers) {
+						if(gameSettings.type === "additions") {
+							tableHTML += (i+j);
+						} else if(gameSettings.type === "multiplications") {
+							tableHTML += (i*j);
 						}
-						tableHTML += '</td>';
-					};
-					tableHTML += '</tr>';
-				};
-
-				tableHTML += '</tbody>';
-				tableHTML += '</table>';
-
-				return tableHTML;
+					}
+					tableHTML += '</td>';
+				}
+				tableHTML += '</tr>';
 			}
 
-			// This updates to the latest game table
-			function updateTableHTML(showAnswers) {
-				var tableHtml = buildTableHTML(gameSettings.rows, gameSettings.columns, showAnswers);
-				$(gameSettings.id).html(tableHtml);
+			tableHTML += '</tbody>';
+			tableHTML += '</table>';
+
+			return tableHTML;
+		}
+
+		// This updates to the latest game table
+		function updateTableHTML(showAnswers) {
+			var tableHtml = buildTableHTML(gameSettings.rows, gameSettings.columns, showAnswers);
+			$(gameSettings.id).html(tableHtml);
+		}
+
+		// This clears the game table
+		function clearGameTable() {
+			$(gameSettings.id).html("");
+		}
+
+		// This loads the quiz questions
+		function loadQuizQuestions() {
+			// Build list of questions and answers
+			var listOfQuestions = [];
+			var listOfAnswers = [];
+
+			for(var i=1; i<gameSettings.rows+1; i++) {
+				for(var j=1; j<gameSettings.columns+1; j++) {
+					var question;
+					var answer;
+
+					if(gameSettings.type === "additions") {
+						question = "What is " + i + " + " + j + "?";
+						answer = (i + j);
+					} else if(gameSettings.type === "multiplications") {
+						question = "What is " + i + " x " + j + "?";
+						answer = (i * j);
+					}
+
+					listOfQuestions.push(question);
+					listOfAnswers.push(answer);
+				}
 			}
 
-			// This clears the game table
-			function clearGameTable() {
-				$(gameSettings.id).html("");
+			gameData.questions = listOfQuestions;
+			gameData.answers = listOfAnswers;
+		}
+
+		// This loads the first question
+		function loadFirstQuestion() {
+			// Get the next question
+			var nextQuestionID = Math.floor((Math.random() * gameData.questions.length));
+			var question = gameData.questions[nextQuestionID];
+			var answer = gameData.answers[nextQuestionID];
+
+			// Set it in the gameData
+			gameData.currentQuestion = question;
+			gameData.currentAnswer = answer;
+
+			// Set it in the popup
+			$("#questionModalLabel").text(question);
+
+			// Focus on the input
+			$("#answerInput").focus();
+		}
+
+		// This validates user answer
+		function answerIsValid() {
+			var answerFromUser = $("#answerInput").val();
+			var actualAnswer = "" + gameData.currentAnswer;
+			return answerFromUser === actualAnswer;
+		}
+
+		// This loads the next question
+		function loadNextQuestion() {
+			// Before loading the next question, did user answer it correctly?
+			if(answerIsValid() === false) {
+				$("#answerInput").parent().addClass("has-danger");
+				return;
+
+			} else {
+				$("#answerInput").parent().removeClass("has-danger");
+
+				// Remove the question from list of questions (this also removes duplicates like 3+3)
+				for(var i=gameData.questions.length; i >= 0; i--) {
+					if(gameData.questions[i] === gameData.currentQuestion) {
+						gameData.questions.splice(i, 1);
+						gameData.answers.splice(i, 1);
+					}
+				}
 			}
 
-			// When they click the "Additions" button, load the game
-			$(".action-start-additions").click(function() {
-				clearGameTable();
-				gameSettings.type = "additions";
-				updateTableHTML();
+			// Is it the last question?
+			var isLastQuestion = gameData.questions.length === 0;
+			if(isLastQuestion) {
+				$("#questionModal").modal("hide");
+				$("#answerInput").val("");
+				alert("Congratulations! You finished the game!");
+				return;
+			}
+
+			// Get the next question
+			var nextQuestionID = Math.floor((Math.random() * gameData.questions.length));
+			var question = gameData.questions[nextQuestionID];
+			var answer = gameData.answers[nextQuestionID];
+
+			// Set it in the gameData
+			gameData.currentQuestion = question;
+			gameData.currentAnswer = answer;
+
+			// Set it in the popup
+			$("#questionModalLabel").text(question);
+			$("#answerInput").val("");
+
+			// Focus on the input
+			$("#answerInput").focus();
+		}
+
+		$(document).ready(function() {
+			// When user selects operator, set value in game settings
+			$("#selectedOperator").on("change", function() {
+				gameSettings.type = this.value;
 			});
 
-			// When they click the "Multiplications" button, load the game
-			$(".action-start-multiplications").click(function() {
-				clearGameTable();
-				gameSettings.type = "multiplications";
-				updateTableHTML();
+			// When user selects numbers, set value in game settings
+			$("#selectedNumber1").on("change", function() {
+				gameSettings.rows = parseInt(this.value, 10);
+			});
+
+			$("#selectedNumber2").on("change", function() {
+				gameSettings.columns = parseInt(this.value, 10);
 			});
 
 			// When they click the "Show answers" button, load it with the answers
@@ -123,7 +289,26 @@
 
 			// When they click the "Start quiz" button, start a new quiz
 			$(".action-start-quiz").click(function() {
-				alert("Quiz feature is coming soon!");
+				clearGameTable();
+				loadQuizQuestions();
+				loadFirstQuestion();
+				$('#questionModal').modal();
+			});
+
+			// When they submit an answer by pressing 'next question', process it
+			$(".action-next-question").click(function() {
+				loadNextQuestion();
+			});
+
+			// Detect the "enter" press when user submits answer
+			$("#answerInput").keypress(function() {
+				if(event.which == 13) {
+					// Prevent form submit, even though no form
+					event.preventDefault();
+
+					// Launch event for clicking next
+					$(".action-next-question").click();
+				}
 			});
 		});
 	</script>
@@ -135,9 +320,6 @@
 
 			// Load the container for the game
 			$("#container-game").show();
-
-			// Start game
-			$(".action-start-additions").click();
 		});
 	</script>
 {% endblock %}
