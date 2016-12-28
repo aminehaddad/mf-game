@@ -9,7 +9,7 @@
 	<div class="container-fluid" id="container-game" style="display:none;">
 		<div class="row header">
 			<h2>MathFun Game</h2>
-			<p>by Amine Haddad</p>
+			<!-- <p>by Amine Haddad</p> -->
 		</div>
 		<div class="row options">
 			<div class="col-xs-12">
@@ -31,6 +31,9 @@
 							<option value="10">10</option>
 							<option value="11">11</option>
 							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
 						</select>
 						<select class="form-control" id="selectedOperator">
 							<option value="additions">+</option>
@@ -49,11 +52,14 @@
 							<option value="10">10</option>
 							<option value="11">11</option>
 							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
 						</select>
 					</div>
 					<div class="button-options">
 						<button type="button" class="btn btn-secondary action-start-quiz">Start quiz</button>
-						<button type="button" class="btn btn-secondary action-show-answers">Show answers</button>
+						<button type="button" class="btn btn-secondary action-show-answers" style="display:none;">Show answers</button>
 					</div>
 				</div>
 			</div>
@@ -108,9 +114,11 @@
 		// Game settings
 		var gameSettings = {
 			"id": "#table-math-container",
-			"rows": 4,
-			"columns": 4,
-			"type": "additions",
+			"rows": 10,
+			"columns": 10,
+			"type": "multiplications",
+
+			"showAnswerTable": true,
 		};
 
 		var gameData = {
@@ -145,7 +153,7 @@
 				tableHTML += '<th>x</th>';
 			}
 
-			for(var i=1; i<rows+1; i++) {
+			for(var i=1; i<columns+1; i++) {
 				tableHTML += '<th>';
 				tableHTML += i;
 				tableHTML += '</th>';
@@ -156,10 +164,10 @@
 			// Table body
 			tableHTML += '<tbody>';
 
-			for(var i=1; i<columns+1; i++) {
+			for(var i=1; i<rows+1; i++) {
 				tableHTML += '<tr>';
 				tableHTML += '<th>' + i + '</th>';
-				for(var j=1; j<rows+1; j++) {
+				for(var j=1; j<columns+1; j++) {
 					tableHTML += '<td>';
 					if(showAnswers) {
 						if(gameSettings.type === "additions") {
@@ -268,6 +276,15 @@
 				$("#questionModal").modal("hide");
 				$("#answerInput").val("");
 				$(".row.congrats").show();
+
+				if(gameSettings.showAnswerTable === true) {
+					clearGameTable();
+					$(".row.answers").show();
+					updateTableHTML(showAnswers=true);
+				} else {
+					$(".row.answers").hide();
+				}
+
 				return;
 			}
 
@@ -301,6 +318,14 @@
 
 			$("#selectedNumber2").on("change", function() {
 				gameSettings.columns = parseInt(this.value, 10);
+			});
+
+			$("#selectedOperator, #selectedNumber1, #selectedNumber2").on("change", function() {
+				// If the answers are shown, redraw them
+				if(gameSettings.showAnswerTable) {
+					clearGameTable();
+					updateTableHTML(showAnswers=true);
+				}
 			});
 
 			// When they click the "Show answers" button, load it with the answers
@@ -350,6 +375,15 @@
 
 			// Load the container for the game
 			$("#container-game").show();
+
+			// If showAnswerTable is on, then show it
+			if(gameSettings.showAnswerTable === true) {
+				clearGameTable();
+				$(".row.answers").show();
+				updateTableHTML(showAnswers=true);
+			} else {
+				$(".row.answers").hide();
+			}
 		});
 	</script>
 {% endblock %}

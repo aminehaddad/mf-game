@@ -1,7 +1,5 @@
-#table-math th,
-#table-math td {
-	text-align: center;
-	min-width: 60px;
+body {
+	background-color: #FFFFFF;
 }
 
 /* Do not stretch form-inline on mobile */
@@ -26,6 +24,7 @@
 	text-shadow: 3px 2px #000000;
 
 	padding-top: 10px;
+	margin-bottom: 15px;
 }
 
 .row.header p {
@@ -63,6 +62,23 @@
 .row.answers {
 	background-color: #FFFFFF;
 	padding-top: 15px;
+}
+
+/* The answer table */
+#table-math th,
+#table-math td {
+	text-align: center;
+	/*min-width: 60px;*/
+}
+
+#table-math th {
+	background-color: #373a3c;
+	color: #FFFFFF;
+}
+
+#table-math td {
+	background-color: #5bc0de;
+	color: #FFFFFF;
 }
 
 /* Footer row */
