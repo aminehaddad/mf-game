@@ -56,8 +56,6 @@
 							<option value="14">14</option>
 							<option value="15">15</option>
 						</select>
-					</div>
-					<div class="button-options">
 						<button type="button" class="btn btn-secondary action-start-quiz">Start quiz</button>
 						<button type="button" class="btn btn-secondary action-show-answers" style="display:none;">Show answers</button>
 					</div>
@@ -67,6 +65,7 @@
 		<div class="row congrats" style="display:none;">
 			<div class="col-xs-12">
 				<p>Congratulations! You finished the game!</p>
+				<p class="gameTime"></p>
 			</div>
 		</div>
 		<div class="row answers" style="display:none;">
@@ -133,6 +132,10 @@
 
 			"totalQuestionCount": 0,
 			"currentQuestionCount": 0,
+
+			"startTime": Date.now(),
+			"stopTime": Date.now(),
+			"totalTime": 0,
 		};
 
 		// Setup default values of gameSettings when document loads
@@ -244,6 +247,7 @@
 			gameData.currentQuestion = question;
 			gameData.currentAnswer = answer;
 			gameData.currentQuestionCount = 1;
+			gameData.startTime = Date.now();
 
 			// Set it in the popup
 			$("#questionModalLabel").text(question);
@@ -294,6 +298,9 @@
 					$(".row.answers").hide();
 				}
 
+				gameData.stopTime = Date.now();
+				gameData.totalTime = gameData.stopTime - gameData.startTime;
+				$(".gameTime").text("It took you: " + getTimeString());
 				return;
 			}
 
@@ -314,6 +321,33 @@
 
 			// Focus on the input
 			$("#answerInput").focus();
+		}
+
+		function getTimeString() {
+			// Get the total milliseconds it took to finish
+			var totalMs = gameData.stopTime - gameData.startTime;
+			var totalSeconds = totalMs / 1000;
+
+			// How many minutes?
+			var minutes = Math.floor(totalSeconds / 60);
+			totalSeconds -= minutes * 60;
+
+			// How many seconds?
+			var seconds = Math.ceil(totalSeconds);
+			totalSeconds -= seconds;
+
+			// Build the string
+			var timeString;
+
+			if(minutes > 1) {
+				timeString = minutes + " minutes and " + seconds + " seconds";
+			} else if(minutes == 1) {
+				timeString = minutes + " minute and " + seconds + " seconds";
+			} else {
+				timeString = seconds + " seconds";
+			}
+
+			return timeString;
 		}
 
 		$(document).ready(function() {

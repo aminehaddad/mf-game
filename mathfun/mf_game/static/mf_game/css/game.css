@@ -43,10 +43,6 @@ body {
 	color: #FFFFFF;
 }
 
-.row.options .button-options {
-	margin-top: 10px;
-}
-
 /* The congrats row */
 .row.congrats {
 	padding-top: 15px;
