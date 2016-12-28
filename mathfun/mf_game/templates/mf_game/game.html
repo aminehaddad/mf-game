@@ -56,7 +56,7 @@
 							<option value="14">14</option>
 							<option value="15">15</option>
 						</select>
-						<button type="button" class="btn btn-secondary action-start-quiz">Start quiz</button>
+						<button type="button" class="btn btn-secondary action-start-quiz">Start!</button>
 						<button type="button" class="btn btn-secondary action-show-answers" style="display:none;">Show answers</button>
 					</div>
 				</div>
@@ -87,24 +87,24 @@
 
 	<!-- Question modal -->
 	<div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="questionModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-		<div class="modal-dialog" role="document">
+		<div class="modal-dialog modal-sm" role="document">
 			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="questionModalLabel">Question: loading..</h4>
-				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<label for="answerInput" class="col-form-label">Answer:</label>
-						<div class="">
+						<label for="answerInput" class="col-form-label">
+							<span id="questionModalLabel">Question: loading..</span>
+						</label>
+						<div class="answerContainer">
 							<input class="form-control" type="number" id="answerInput" value="">
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
+					<button type="button" class="btn btn-sm btn-warning action-stop-quiz" style="float: left;">Quit</button>
 					<div class="questionCount" style="display:inline-block;">
 						<span class="questionCountSpan" style="margin-right: 10px;">Question 1</span>
 					</div>
-					<button type="button" class="btn btn-primary action-next-question">Next</button>
+					<button type="button" class="btn btn-sm btn-primary action-next-question">Next</button>
 				</div>
 			</div>
 		</div>
@@ -413,6 +413,29 @@
 					// Launch event for clicking next
 					$(".action-next-question").click();
 				}
+			});
+
+			// When they press 'stop quiz', ask them and shut it down
+			$(".action-stop-quiz").click(function() {
+				// Confirm that they want to quit
+				var confirm = window.confirm("Are you sure you want to quit?");
+				if(!confirm) {
+					return;
+				}
+
+				// Shut the game down
+				$("#questionModal").modal("hide");
+				$("#answerInput").val("");
+
+				if(gameSettings.showAnswerTable === true) {
+					clearGameTable();
+					$(".row.answers").show();
+					updateTableHTML(showAnswers=true);
+				} else {
+					$(".row.answers").hide();
+				}
+
+				return;
 			});
 		});
 	</script>
