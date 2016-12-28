@@ -136,6 +136,8 @@
 			"startTime": Date.now(),
 			"stopTime": Date.now(),
 			"totalTime": 0,
+
+			"mistakes": 0,
 		};
 
 		// Setup default values of gameSettings when document loads
@@ -247,6 +249,7 @@
 			gameData.currentQuestion = question;
 			gameData.currentAnswer = answer;
 			gameData.currentQuestionCount = 1;
+			gameData.mistakes = 0;
 			gameData.startTime = Date.now();
 
 			// Set it in the popup
@@ -269,6 +272,7 @@
 			// Before loading the next question, did user answer it correctly?
 			if(answerIsValid() === false) {
 				$("#answerInput").parent().addClass("has-danger");
+				gameData.mistakes++;
 				return;
 
 			} else {
@@ -300,7 +304,7 @@
 
 				gameData.stopTime = Date.now();
 				gameData.totalTime = gameData.stopTime - gameData.startTime;
-				$(".gameTime").text("It took you: " + getTimeString());
+				$(".gameTime").text("You solved " + gameData.totalQuestionCount + " questions in " + getTimeString() + " with " + gameData.mistakes + " mistakes.");
 				return;
 			}
 
