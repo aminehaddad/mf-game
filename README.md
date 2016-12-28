@@ -25,8 +25,8 @@ This is how you install vagrant-vbguest:
 
 Retrieve the source code:
 
-	git clone https://github.com/aminehaddad/mathfun.git
-	cd mathfun
+	git clone https://github.com/aminehaddad/mf-game.git
+	cd mf-game
 
 ## Starting the virtual machine development environment
 
