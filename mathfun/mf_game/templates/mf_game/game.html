@@ -102,6 +102,9 @@
 					</div>
 				</div>
 				<div class="modal-footer">
+					<div class="questionCount" style="display:inline-block;">
+						<span class="questionCountSpan" style="margin-right: 10px;">Question 1</span>
+					</div>
 					<button type="button" class="btn btn-primary action-next-question">Next</button>
 				</div>
 			</div>
@@ -127,6 +130,9 @@
 
 			"currentQuestion": "",
 			"currentAnswer": "",
+
+			"totalQuestionCount": 0,
+			"currentQuestionCount": 0,
 		};
 
 		// Setup default values of gameSettings when document loads
@@ -224,6 +230,7 @@
 
 			gameData.questions = listOfQuestions;
 			gameData.answers = listOfAnswers;
+			gameData.totalQuestionCount = listOfQuestions.length;
 		}
 
 		// This loads the first question
@@ -236,9 +243,11 @@
 			// Set it in the gameData
 			gameData.currentQuestion = question;
 			gameData.currentAnswer = answer;
+			gameData.currentQuestionCount = 1;
 
 			// Set it in the popup
 			$("#questionModalLabel").text(question);
+			$(".questionCountSpan").text("Question " + gameData.currentQuestionCount + " of " + gameData.totalQuestionCount);
 
 			// Focus on the input
 			$("#answerInput").focus();
@@ -296,10 +305,12 @@
 			// Set it in the gameData
 			gameData.currentQuestion = question;
 			gameData.currentAnswer = answer;
+			gameData.currentQuestionCount++;
 
 			// Set it in the popup
 			$("#questionModalLabel").text(question);
 			$("#answerInput").val("");
+			$(".questionCountSpan").text("Question " + gameData.currentQuestionCount + " of " + gameData.totalQuestionCount);
 
 			// Focus on the input
 			$("#answerInput").focus();
