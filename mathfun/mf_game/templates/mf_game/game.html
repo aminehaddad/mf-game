@@ -456,7 +456,7 @@
 
 			// Detect the "enter" press when user submits answer
 			// NOTE: keypress() is not official and does not work on mobile. It is better to use keyup/keydown.
-			$("#answerInput").keyup(function() {
+			$("#answerInput").keyup(function(event) {
 				if(event.which == 13) {
 					// Prevent form submit, even though no form
 					event.preventDefault();
