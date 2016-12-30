@@ -37,7 +37,9 @@
 						</select>
 						<select class="form-control" id="selectedOperator">
 							<option value="additions">+</option>
+							<option value="subtractions">-</option>
 							<option value="multiplications">x</option>
+							<option value="divisions">/</option>
 						</select>
 						<select class="form-control" id="selectedNumber2">
 							<option value="1">1</option>
@@ -121,6 +123,12 @@
 			"type": "multiplications",
 
 			"showAnswerTable": true,
+
+			// For divisions, how many decimals needed after period?
+			// Example for 1: 1/3 answer is 0.3
+			// Example for 2: 1/3 answer is 0.33
+			// Example for 3: 1/3 answer is 0.333
+			"divisionDecimals": 2,
 		};
 
 		var gameData = {
@@ -162,6 +170,10 @@
 				tableHTML += '<th>+</th>';
 			} else if(gameSettings.type === "multiplications") {
 				tableHTML += '<th>x</th>';
+			} else if(gameSettings.type === "divisions") {
+				tableHTML += '<th>/</th>';
+			} else if(gameSettings.type === "subtractions") {
+				tableHTML += '<th>-</th>';
 			}
 
 			for(var i=1; i<columns+1; i++) {
@@ -185,6 +197,10 @@
 							tableHTML += (i+j);
 						} else if(gameSettings.type === "multiplications") {
 							tableHTML += (i*j);
+						} else if(gameSettings.type === "divisions") {
+							tableHTML += getDivisionAnswer(i, j);
+						} else if(gameSettings.type === "subtractions") {
+							tableHTML += (i-j);
 						}
 					}
 					tableHTML += '</td>';
@@ -226,6 +242,12 @@
 					} else if(gameSettings.type === "multiplications") {
 						question = "What is " + i + " x " + j + "?";
 						answer = (i * j);
+					} else if(gameSettings.type === "divisions") {
+						question = "What is " + i + " / " + j + "?";
+						answer = getDivisionAnswer(i, j);
+					} else if(gameSettings.type === "subtractions") {
+						question = "What is " + i + " - " + j + "?";
+						answer = (i - j);
 					}
 
 					listOfQuestions.push(question);
@@ -236,6 +258,34 @@
 			gameData.questions = listOfQuestions;
 			gameData.answers = listOfAnswers;
 			gameData.totalQuestionCount = listOfQuestions.length;
+		}
+
+		// This function fixes long division answers by limiting after-period decimals and converting X.00 to X (example: 3.00 to 3)
+		function getDivisionAnswer(numerator, denominator) {
+			// Get the answer (2/3 = 0.666666..)
+			var answer = (numerator / denominator);
+
+			// Limit the decimals after period (0.333333.. = 0.33)
+			// Note: problem with (2/3).toFixed(2) is it returns 0.67 instead of 0.66. Examples:
+			// 1. (2/3).toFixed(2) = 0.67 (answer: 0.66)
+			// 2. (2/3).toFixed(3) = 0.667 (answer: 0.666)
+			// 3. (2/3).toFixed(4) = 0.6667 (answer: 0.6666)
+			// Solution: increase toFixed parameter by 1.
+			answer = answer.toFixed(gameSettings.divisionDecimals + 1).slice(0, -1);
+
+			// Replace commas with periods (e.g. 0,333 = 0.333)
+			answer = answer.replace(",", ".");
+
+			// If the number ends with .00.., remove the .00..
+			var zeroString = "." + Array(gameSettings.divisionDecimals + 1).join("0");
+
+			if(answer.endsWith(zeroString)) {
+				answer = parseInt(answer);
+			} else {
+				answer = parseFloat(answer);
+			}
+
+			return answer;
 		}
 
 		// This loads the first question
